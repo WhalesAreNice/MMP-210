@@ -1,24 +1,51 @@
 function setup() {
     createCanvas(800, 800);
-    fill('#f9dd90');
-    arc(50, 350, 150, 200, HALF_PI, PI+HALF_PI);
-    arc(550, 350, 150, 200, PI+HALF_PI, HALF_PI);
-    ellipse(300, 400, 560, 700);
-    quad(325, 380, 275, 380, 240, 530, 360, 530);
+    background('lightgray');
+    
+    fill("#1c1919");
+    noStroke();
+    rect(200, 130, 320, 250);
+    arc(370, 165, 370, 240, 0, 0);
+    triangle(185, 155, 200, 380, 300, 300);
+    triangle(580, 200, 600, 360, 520, 170);
+
+    stroke(1);
+    fill('#ffd5a5');
+    ellipse(205, 380, 30, 70);
+    ellipse(595, 380, 30, 70);
+    ellipse(400, 400, 400, 540);
+    
     fill('white');
-    ellipse(175, 350, 150, 75);
-    ellipse(425, 350, 150, 75);
+    ellipse(300, 380, 80, 40);
+    ellipse(500, 380, 80, 40);
+    
     fill('black');
-    ellipse(175, 350, 75, 75);
-    ellipse(425, 350, 75, 75);
-    fill('#f99884');
-    arc(300, 610, 230, 110, 0, PI);
-    arc(300, 610, 230, 90, PI, TWO_PI);
-    fill("white");
-    arc(300, 610, 210, 50, 0, TWO_PI);
-    line(195, 610, 405, 610);
-    fill('black');
-    quad(100, 50, 450, 50, 530, 200, 70, 200);
-    triangle(120, 250, 110, 270, 250, 280);
-    triangle(490, 250, 500, 270, 360, 280);
+    ellipse(300, 380, 40);
+    ellipse(500, 380, 40);
+    
+    noFill();
+    arc(365, 480, 40, 40, HALF_PI, PI+QUARTER_PI);
+    arc(435, 480, 40, 40, PI+HALF_PI+QUARTER_PI, HALF_PI);
+    arc(360, 425, 30, 70, PI+HALF_PI+QUARTER_PI, HALF_PI);
+    arc(440, 425, 30, 70, HALF_PI, PI+QUARTER_PI);
+    arc(380, 495, 20, 5, 0, PI);
+    arc(420, 495, 20, 5, 0, PI);
+    
+    fill('#f9ada4');
+    arc(400, 570, 130, 50, 0, PI);
+    triangle(334, 570, 385, 550, 420, 570);
+    triangle(380, 570, 415, 550, 466, 570);
+    noStroke();
+    arc(400, 570, 130, 20, PI, 0);
+    stroke(1);
+    
+    fill('#1c1919');
+    triangle(240, 320, 350, 330, 265, 300);
+    triangle(450, 330, 560, 320, 535, 300);
+    
+    noStroke();
+    rect(230, 130, 318, 80);
+    triangle(260, 200, 230, 280, 200, 300);
+    triangle(530, 170, 570, 280, 590 ,300);
+    
 }
