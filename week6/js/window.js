@@ -10,7 +10,7 @@ function setup() {
 
 
 function draw() {
-    background('green');
+//    background('green');
     
     translate(width/2, height/2);
     
