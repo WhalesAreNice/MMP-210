@@ -17,7 +17,7 @@ function draw() {
     
     for (var i = 0; i < 10; i++){
         for (var h = 0; h <5; h++){
-        drawWindow(x+i*75, y+h*65,  pos_x, pos_y);
+        drawWindow(x+i*65, y+h*65,  pos_x, pos_y);
             };
     };
 }
