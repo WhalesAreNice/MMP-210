@@ -1,21 +1,69 @@
 var spaceship;
 var enemies = [];
 var bullets = [];
+var additional = 0
+var score = 0;
+var gameState = 0;
+var delay = 100;
 
 function setup () {
     createCanvas(1000,600);
     background("black");
     frameRate(60);
     noCursor();
-    
-    spaceship = new Spaceship();
-    for(var i = 0; i < 10; i++) {
-        enemies.push(new enemy());
-    }
-    
+
 }
 
-function draw () {
+function keyPressed (){
+    if (gameState == 0 || gameState == 2 && delay == 0) {
+        gameState = 1;
+        gameStart();
+        
+    }
+}
+
+function draw (){
+    
+    if (gameState == 0){
+        push();
+        translate(width/2, height/2);
+        fill('white');
+        textSize(100);
+        textAlign(CENTER);
+        text("Space Shooter", 0, -50);
+        textSize (60);
+        text("Press any Key to Start", 0 , 50);
+        pop();
+    }else if(gameState == 1){
+        game();
+    } else if (gameState == 2){
+        
+        spaceship.explode();
+        
+        push();
+        translate(width/2, height/2);
+        fill('white');
+        textSize(100);
+        textAlign(CENTER);
+        text("Game Over", 0, -50);
+        textSize (60);
+        text("Final Score: " + score, 0 , 50);
+        
+        
+        if(delay > 0){
+            delay--;
+        } else {
+            text("Press any Key to Play Again", 0 , 150);
+        }
+        
+        pop();
+        
+        
+    }
+}
+
+
+function game () {
     background("black");
     crosshair();
     if (spaceship.alive){
@@ -46,31 +94,50 @@ function draw () {
     
     //enemies
     for (var j = 0; j < enemies.length; j++) {
-        enemies[j].display();
-        enemies[j].update();
-        enemies[j].edges();  
+            enemies[j].display();
+            enemies[j].update();
+            enemies[j].edges();  
         
-//        spaceship.collide(enemies[j].x, enemies[j].y, enemies[j].size);
-    }
+        if (enemies[j].hits(spaceship)){
+            
+            }
+        
+            }
     
     //bullets
+    var destroyEnemies = [];
     for (var i = 0; i < bullets.length; i++) {
-        bullets[i].display();
-        bullets[i].update();
-        
-        //enemies
-        for (var j = 0; j < enemies.length; j++) {
-            if(bullets[i].hits(enemies[j])){
-                console.log('hits');
-            }
-
             
-        }
+        
+            bullets[i].display();
+            bullets[i].update();
+
+            //enemies
+            for (var j = 0; j < enemies.length; j++) {
+                if(enemies[j].alive){
+
+
+                    if(bullets[i].hits(enemies[j])){
+                        destroyEnemies.push(j);
+                    }
+                }
+            }      
+    }
+    for (var i = 0; i < destroyEnemies.length; i++) {
+     enemies.splice(destroyEnemies[i], 1);   
+    }
+    
+    if (frameCount%100 == 0) {
+        enemies.push(new enemy());
+        additional++;
     }
     
     
-    
-    
+    push();
+    fill('white');
+    textSize(30);
+    text("Score: " + score, 5, 35);
+    pop();
     
 }
 
@@ -119,7 +186,8 @@ function Spaceship () {
     
     this.explode = function(){
         fill("red");
-        ellipse(this.x + this.size/2, this.y, this.size);
+        ellipse(this.x, this.y, this.size);
+        this.alive = false;
     }
     
     
@@ -157,6 +225,7 @@ function keyIsDown() {
 
 
 function crosshair () {
+    push();
     fill('white');
     stroke('white');
     strokeWeight(3);
@@ -164,12 +233,14 @@ function crosshair () {
     line(mouseX,mouseY-4,mouseX,mouseY-10);
     line(mouseX+4,mouseY,mouseX+10,mouseY);
     line(mouseX-4,mouseY,mouseX-10,mouseY);
+    pop();
 }
 
 function blaster (x,y) {
     this.pos = createVector(x,y);
     this.vel = (this.xspeed, this.yspeed);
     this.speed = 15;
+    this.alive = true;
     
     var xdir = mouseX - x < 0 ? -1 : 1;
     var ydir = mouseY - y < 0 ? -1 : 1;
@@ -201,10 +272,14 @@ function blaster (x,y) {
         pop();
     }
     
-    this.hits = function (){
-        var d = dist(this.x, this.y, enemies.x, enemies.y);
-        if (d < enemies.size+this.size) {
-            console.log('hits');
+    this.hits = function (e){
+        var d = dist(this.pos.x, this.pos.y, e.x, e.y);
+        if (d < e.size+10) {
+            e.explode();
+            this.alive = false;
+            return true;
+        } else {
+            return false;
         }
     }
 }
@@ -229,13 +304,23 @@ function blaster (x,y) {
 
 
 function mouseClicked() {
-    bullets.push(new blaster(spaceship.x,spaceship.y));
+    if (gameState == 1 && spaceship.alive){
+        bullets.push(new blaster(spaceship.x,spaceship.y));
+    }
     
 }
 
 function enemy () {
+    
     this.x = random (0,width);
     this.y = random (0,height);
+    
+    
+    while(dist(this.x, this.y, spaceship.x, spaceship.y)< 100){
+            this.x = random (0,width);
+            this.y = random (0,height);
+          }
+    
     this.size = random (30,30);
     this.color = color("blue");
     this.xspeed = 3;
@@ -264,7 +349,38 @@ function enemy () {
         }
     }
     
-    this.collide = function() {
-        
+    this.explode = function (){
+        push();
+        fill('red');
+        //this.alive = false;
+        ellipse(this.x, this.y, this.size*4/3);
+        pop();
+        score++;
     }
+    
+    this.hits = function (s){
+        var d = dist(this.x, this.y, s.x, s.y);
+        if (d < s.size/2) {
+            s.explode();
+            gameOver();
+            
+        }
+    }
+    
+}
+
+function gameStart (){
+    spaceship = new Spaceship();
+    for(var i = 0; i < 10; i++) {
+        enemies.push(new enemy());
+    }
+    score = 0;
+}
+
+function gameOver(){
+    gameState = 2;
+    enemies = [];
+    bullets = [];
+    delay = 100;
+    
 }
