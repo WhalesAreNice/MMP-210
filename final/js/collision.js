@@ -18,8 +18,12 @@ function setup () {
 function draw () {
     background("black");
     crosshair();
-    spaceship.display();
-    spaceship.edges();
+    if (spaceship.alive){
+        spaceship.display();
+        spaceship.edges();
+    } else {
+        spaceship.explode();
+    }
     
 //    if (keyIsPressed) {
 //        spaceship.update(keyCode);
@@ -39,19 +43,32 @@ function draw () {
        spaceship.y -= spaceship.ySpeed;
    }
     
+    
+    //enemies
+    for (var j = 0; j < enemies.length; j++) {
+        enemies[j].display();
+        enemies[j].update();
+        enemies[j].edges();  
+        
+//        spaceship.collide(enemies[j].x, enemies[j].y, enemies[j].size);
+    }
+    
     //bullets
     for (var i = 0; i < bullets.length; i++) {
         bullets[i].display();
         bullets[i].update();
+        
+        //enemies
+        for (var j = 0; j < enemies.length; j++) {
+            if(bullets[i].hits(enemies[j])){
+                console.log('hits');
+            }
+
+            
+        }
     }
     
-    //enemies
-    var extra = frameCount/600;
-    for (var i = 0; i < enemies.length; i++) {
-        enemies[i].display();
-        enemies[i].update();
-        enemies[i].edges();  
-    }
+    
     
     
     
@@ -63,6 +80,7 @@ function Spaceship () {
     this.y = height/2;
     this.xSpeed = 10;
     this.ySpeed = 10;
+    this.alive = true;
     
     this.display = function() {
         fill('white');
@@ -90,6 +108,18 @@ function Spaceship () {
         } else if (this.y < 0){
             this.y = height;
         }
+    }
+    
+//    this.collide = function(enemies.x, enemies.y, enemies.size){
+//        var d = dist(this.x, this.y, enemies.x, enemies.y);
+//        if (d < this.size + enemies.size){
+//            console.log('HITS');
+//        }
+//    }
+    
+    this.explode = function(){
+        fill("red");
+        ellipse(this.x + this.size/2, this.y, this.size);
     }
     
     
@@ -139,11 +169,24 @@ function crosshair () {
 function blaster (x,y) {
     this.pos = createVector(x,y);
     this.vel = (this.xspeed, this.yspeed);
-    this.speed = 10;
-    this.xspeed = sqrt(sq(this.speed)-sq(y-mouseY));
-    this.yspeed = sqrt(sq(this.speed)-sq(mouseX-x));
-    console.log(this.yspeed);
-    console.log(this.xspeed);
+    this.speed = 15;
+    
+    var xdir = mouseX - x < 0 ? -1 : 1;
+    var ydir = mouseY - y < 0 ? -1 : 1;
+    
+    if(abs(mouseX-x) > abs(mouseY-y)){
+        this.xspeed = this.speed * xdir;
+        this.yspeed = this.speed * ydir * (abs(mouseY-y) / abs(mouseX-x));
+    } else {
+        this.xspeed = this.speed * xdir * (abs(mouseX-x) / abs(mouseY-y));
+        this.yspeed = this.speed * ydir;
+    }
+    
+    
+//    this.xspeed = sqrt(sq(this.speed)-sq(y-mouseY));
+//    this.yspeed = sqrt(sq(this.speed)-sq(mouseX-x));
+//    console.log(this.yspeed);
+//    console.log(this.xspeed);
     
     this.update = function() {
         this.pos.x += this.xspeed;
@@ -156,6 +199,13 @@ function blaster (x,y) {
         strokeWeight(10);
         point(this.pos.x, this.pos.y);
         pop();
+    }
+    
+    this.hits = function (){
+        var d = dist(this.x, this.y, enemies.x, enemies.y);
+        if (d < enemies.size+this.size) {
+            console.log('hits');
+        }
     }
 }
     
