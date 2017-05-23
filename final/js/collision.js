@@ -38,11 +38,22 @@ function draw () {
        spaceship.y -= spaceship.ySpeed;
    }
     
+    //blaster movement
+    
+    
     //enemies
     var extra = frameCount/600;
     for (var i = 0; i < enemies.length; i++) {
         enemies[i].display();
         enemies[i].update();
+        
+//        if (enemies.x[i] > width){
+//            enemies.x[i] = -enemies.size[i];
+//        }
+//        if (enemies.y[i] > height){
+//            enemies.y[i] = -enemies.size[i];
+//        }
+        
     }
     
     
@@ -119,10 +130,20 @@ function blaster (x,y) {
     this.y = y;
     this.size = 2;
     this.color = color("white");
+    this.xspeed = 10;
+    this.yspeed = 10;
+    
     
     this.display = function() {
         fill(this.color);
         ellipse(this.x, this.y, this.size);
+        
+        var dx = mouseX - this.x;
+        var dy = mouseY - this.y;
+        var angle = atan2(dy, dx);
+        push();
+        translate(this.x, this.y);
+        rotate(angle + HALF_PI);
     }
 }
 
@@ -133,7 +154,7 @@ function mouseClicked() {
 function enemy () {
     this.x = random (0,width);
     this.y = random (0,height);
-    this.size = random (10,15);
+    this.size = random (30,30);
     this.color = color("blue");
     this.xspeed = 5;
     this.yspeed = 5;
@@ -145,6 +166,10 @@ function enemy () {
         this.x += this.xspeed;
         this.y += this.yspeed;
     }
+    
+    
+    
+    
     this.collide = function() {
         
     }
