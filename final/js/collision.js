@@ -127,7 +127,7 @@ function game () {
      enemies.splice(destroyEnemies[i], 1);   
     }
     
-    if (frameCount%100 == 0) {
+    if (frameCount%30 == 0) {
         enemies.push(new enemy());
         additional++;
     }
