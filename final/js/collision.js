@@ -133,7 +133,7 @@ function game () {
         additional++;
     }
     
-    if (interval > 10 && frameCount%120 == 0){
+    if (interval > 3 && frameCount%60 == 0){
         interval--;
     }
     
