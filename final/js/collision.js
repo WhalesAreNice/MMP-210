@@ -387,5 +387,6 @@ function gameOver(){
     enemies = [];
     bullets = [];
     delay = 100;
+    interval = 30;
     
 }
