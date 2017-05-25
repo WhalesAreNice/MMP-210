@@ -5,6 +5,7 @@ var additional = 0
 var score = 0;
 var gameState = 0;
 var delay = 100;
+var interval = 30;
 
 function setup () {
     createCanvas(1000,600);
@@ -127,9 +128,13 @@ function game () {
      enemies.splice(destroyEnemies[i], 1);   
     }
     
-    if (frameCount%30 == 0) {
+    if (frameCount%interval == 0) {
         enemies.push(new enemy());
         additional++;
+    }
+    
+    if (interval > 1 && frameCount%60 == 0){
+        interval--;
     }
     
     
